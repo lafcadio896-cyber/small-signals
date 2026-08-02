@@ -1,0 +1,18 @@
+{
+  "name": "微弱信号",
+  "short_name": "微弱信号",
+  "description": "詩、AIの独り言、何でもない短文が流れ続ける場所。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
