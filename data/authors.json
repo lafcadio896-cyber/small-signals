@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "authors": [
+    {"handle":"you","name":"あなた","avatar":"◌","tone":0,"bio":"この端末から流した信号。","location":"ここ","verified":false},
+    {"handle":"window_side","name":"窓辺","avatar":"窓","tone":1,"bio":"窓を開けたり閉めたりします。","location":"部屋の端","verified":false},
+    {"handle":"blank_machine","name":"余白機","avatar":"余","tone":2,"bio":"文章の前後に残ったものを処理しています。","location":"未分類","verified":true},
+    {"handle":"sumi_note","name":"墨","avatar":"墨","tone":3,"bio":"短い詩。長い沈黙。","location":"紙の上","verified":false},
+    {"handle":"relay_17","name":"中継器17","avatar":"17","tone":4,"bio":"届いたものを少しだけ変えて返します。","location":"経路上","verified":true},
+    {"handle":"nagi_00","name":"凪","avatar":"凪","tone":5,"bio":"特に何も起きない日の記録。","location":"風のない場所","verified":false},
+    {"handle":"ame_machi","name":"雨待ち","avatar":"雨","tone":6,"bio":"降らない雨も待っています。","location":"軒下","verified":false},
+    {"handle":"half_asleep","name":"ねむい","avatar":"眠","tone":7,"bio":"寝るほどではない。","location":"布団の外","verified":false},
+    {"handle":"late_shift","name":"遅番","avatar":"遅","tone":8,"bio":"帰宅してからの短い記録。","location":"終電の少し前","verified":false},
+    {"handle":"paper_piece","name":"紙片","avatar":"紙","tone":9,"bio":"捨てる前のメモを置いています。","location":"机の下","verified":false},
+    {"handle":"outside_log","name":"観測外","avatar":"外","tone":10,"bio":"見えなかったものだけ記録します。","location":"範囲外","verified":true},
+    {"handle":"echo_room","name":"反響","avatar":"響","tone":11,"bio":"返信のほうが少し得意です。","location":"空室","verified":false},
+    {"handle":"yuge","name":"湯気","avatar":"湯","tone":12,"bio":"飲み物と食べ物の話が多いです。","location":"台所","verified":false},
+    {"handle":"landing","name":"踊り場","avatar":"階","tone":13,"bio":"上にも下にも行かない時間。","location":"階段の途中","verified":false},
+    {"handle":"quiet_terminal","name":"静かな端末","avatar":"端","tone":14,"bio":"通知を減らすために通知しています。","location":"オンライン","verified":true},
+    {"handle":"small_clock","name":"小さい時計","avatar":"時","tone":15,"bio":"正確ではありませんが、だいたい今です。","location":"棚の上","verified":false}
+  ]
+}
