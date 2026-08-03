@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "scripts/generate.py"
+      - "scripts/generate.v5.py.gz.b64"
       - "data/authors.json"
   schedule:
     # 04:15 / 10:15 / 16:15 / 22:15 JST
