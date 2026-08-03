@@ -1,13 +1,18 @@
 name: Generate signals
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/generate.py"
+      - "data/authors.json"
   schedule:
     # 04:15 / 10:15 / 16:15 / 22:15 JST
     - cron: "15 1,7,13,19 * * *"
   workflow_dispatch:
     inputs:
       count:
-        description: Number of signals to add
+        description: Number of posts to add
         required: false
         default: "120"
 
@@ -30,21 +35,21 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Generate
+      - name: Generate conversations
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.5-flash-lite' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash-lite' }}
           POST_COUNT: ${{ inputs.count || '120' }}
         run: python scripts/generate.py
       - name: Commit
         run: |
           if git diff --quiet -- data/posts.json; then
-            echo "No new signals"
+            echo "No new posts"
             exit 0
           fi
           git config user.name "small-signals[bot]"
           git config user.email "small-signals[bot]@users.noreply.github.com"
           git add data/posts.json
-          git commit -m "Add generated signals"
+          git commit -m "Add generated conversations"
           git pull --rebase origin main
           git push origin main
