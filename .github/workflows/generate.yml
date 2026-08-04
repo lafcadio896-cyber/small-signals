@@ -4,8 +4,9 @@ on:
   push:
     branches: [main]
     paths:
+      - ".github/workflows/generate.yml"
       - "scripts/generate.py"
-      - "scripts/generate.v5.py.gz.b64"
+      - "scripts/generate_v7.py.gz.b64"
       - "data/authors.json"
   schedule:
     # 04:15 / 10:15 / 16:15 / 22:15 JST
@@ -36,7 +37,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Generate conversations
+      - name: Generate conversations and topics
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash-lite' }}
@@ -44,13 +45,13 @@ jobs:
         run: python scripts/generate.py
       - name: Commit
         run: |
-          if git diff --quiet -- data/posts.json; then
-            echo "No new posts"
+          if git diff --quiet -- data/posts.json data/topics.json && [ -z "$(git status --porcelain -- data/topics.json)" ]; then
+            echo "No new posts or topics"
             exit 0
           fi
           git config user.name "small-signals[bot]"
           git config user.email "small-signals[bot]@users.noreply.github.com"
-          git add data/posts.json
-          git commit -m "Add generated conversations"
+          git add data/posts.json data/topics.json
+          git commit -m "Add generated conversations and current topics"
           git pull --rebase origin main
           git push origin main
