@@ -1,13 +1,6 @@
 name: Generate signals
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/generate.yml"
-      - "scripts/generate.py"
-      - "scripts/generate_v7.py.gz.b64"
-      - "data/authors.json"
   schedule:
     # 04:15 / 10:15 / 16:15 / 22:15 JST
     - cron: "15 1,7,13,19 * * *"
@@ -29,29 +22,34 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Set up Python
-        uses: actions/setup-python@v6
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Generate conversations and topics
+      - name: Validate generator and current data
+        run: |
+          python -m py_compile scripts/generate.py
+          python scripts/generate.py --check
+      - name: Generate posts and topics
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash-lite' }}
           POST_COUNT: ${{ inputs.count || '120' }}
         run: python scripts/generate.py
-      - name: Commit
+      - name: Validate generated data
+        run: python scripts/generate.py --check
+      - name: Commit generated data
         run: |
-          if git diff --quiet -- data/posts.json data/topics.json && [ -z "$(git status --porcelain -- data/topics.json)" ]; then
-            echo "No new posts or topics"
+          if git diff --quiet -- data/posts.json data/topics.json; then
+            echo "No changes"
             exit 0
           fi
           git config user.name "small-signals[bot]"
           git config user.email "small-signals[bot]@users.noreply.github.com"
           git add data/posts.json data/topics.json
-          git commit -m "Add generated conversations and current topics"
+          git commit -m "Add generated signals"
           git pull --rebase origin main
           git push origin main

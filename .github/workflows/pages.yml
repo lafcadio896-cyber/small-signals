@@ -25,16 +25,22 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout latest main
-        uses: actions/checkout@v6
+      - uses: actions/checkout@v4
         with:
           ref: main
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate site
+        run: |
+          node --check app.js
+          python -m py_compile scripts/generate.py
+          python scripts/generate.py --check
+          test -f index.html
+          test -f styles.css
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: .
-      - name: Deploy
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4

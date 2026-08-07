@@ -4,102 +4,101 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="詩、AIの独り言、何でもない短文が会話しながら流れ続ける場所。">
+  <meta name="description" content="短文と小さな会話が流れ続ける架空SNS。">
   <title>微弱信号</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=4">
-  <link rel="stylesheet" href="./hotfix.css?v=4">
-  <link rel="stylesheet" href="./conversation-ui.css?v=6">
+  <link rel="stylesheet" href="./styles.css?v=9">
 </head>
 <body>
   <div class="app-shell">
     <aside class="left-rail" aria-label="メインナビゲーション">
       <div class="left-sticky">
-        <button class="brand-button" type="button" data-route="home" aria-label="微弱信号 ホーム"><span class="brand-glyph">⌁</span></button>
+        <button class="brand-button" type="button" data-route="home" aria-label="ホーム">⌁</button>
         <nav class="main-nav">
-          <button class="nav-item is-active" type="button" data-route="home"><span class="nav-icon">⌂</span><span>ホーム</span></button>
-          <button class="nav-item" type="button" data-route="explore"><span class="nav-icon">⌕</span><span>話題を検索</span></button>
-          <button class="nav-item" type="button" data-route="notifications"><span class="nav-icon">◌</span><span>通知</span><span id="notificationBadge" class="nav-badge" hidden></span></button>
-          <button class="nav-item" type="button" data-route="bookmarks"><span class="nav-icon">◇</span><span>保存済み</span></button>
-          <button class="nav-item" type="button" data-route="profile/you"><span class="nav-icon">○</span><span>プロフィール</span></button>
+          <button class="nav-item is-active" type="button" data-route="home"><span>⌂</span><b>ホーム</b></button>
+          <button class="nav-item" type="button" data-route="explore"><span>⌕</span><b>話題を検索</b></button>
+          <button class="nav-item" type="button" data-route="notifications"><span>◌</span><b>通知</b><i id="notificationBadge" hidden></i></button>
+          <button class="nav-item" type="button" data-route="bookmarks"><span>◇</span><b>保存済み</b></button>
+          <button class="nav-item" type="button" data-route="profile/you"><span>○</span><b>プロフィール</b></button>
         </nav>
-        <button id="openComposer" class="primary-compose" type="button">信号を送る</button>
-        <button class="mini-profile" type="button" data-route="profile/you"><span class="avatar tone-0">◌</span><span class="mini-profile-copy"><strong>あなた</strong><small>@you</small></span><span>•••</span></button>
+        <button id="openComposer" class="compose-main" type="button">ポストする</button>
+        <button class="mini-profile" type="button" data-route="profile/you">
+          <span class="avatar tone-0">◌</span>
+          <span><strong>あなた</strong><small>@you</small></span>
+          <b>•••</b>
+        </button>
       </div>
     </aside>
 
     <main class="center-column">
-      <header id="viewHeader" class="view-header">
-        <div class="view-title-row">
-          <button id="backButton" class="icon-button back-button" type="button" aria-label="戻る" hidden>←</button>
-          <div><h1 id="viewTitle">ホーム</h1><p id="viewSubtitle" class="view-subtitle" hidden></p></div>
-          <button id="headerAction" class="icon-button header-action" type="button" aria-label="メニュー">•••</button>
+      <header class="view-header">
+        <div class="title-row">
+          <button id="backButton" class="icon-button" type="button" aria-label="戻る" hidden>←</button>
+          <div><h1 id="viewTitle">ホーム</h1><p id="viewSubtitle" hidden></p></div>
+          <button class="icon-button" type="button" aria-label="その他">•••</button>
         </div>
-        <div id="feedTabs" class="feed-tabs" role="tablist">
-          <button class="feed-tab is-active" type="button" data-feed="for-you" role="tab" aria-selected="true">おすすめ</button>
-          <button class="feed-tab" type="button" data-feed="following" role="tab" aria-selected="false">フォロー中</button>
+        <div id="feedTabs" class="feed-tabs">
+          <button class="feed-tab is-active" data-feed="for-you" type="button">おすすめ</button>
+          <button class="feed-tab" data-feed="following" type="button">フォロー中</button>
         </div>
       </header>
 
       <section id="inlineComposer" class="inline-composer">
         <span class="avatar tone-0">◌</span>
-        <div class="composer-main">
-          <textarea id="inlineComposerText" rows="2" maxlength="180" placeholder="いま、何を考えてる？" aria-label="投稿内容"></textarea>
-          <div class="composer-footer"><span class="composer-hint">この端末だけに保存されます</span><button id="inlineComposerSubmit" class="small-primary" type="button" disabled>送信</button></div>
+        <div>
+          <textarea id="inlineText" maxlength="180" rows="2" placeholder="いまどうしてる？"></textarea>
+          <div class="composer-footer">
+            <small>この端末だけに保存されます</small>
+            <button id="inlineSubmit" class="primary-small" type="button" disabled>ポストする</button>
+          </div>
         </div>
       </section>
 
-      <div id="newPostsBanner" class="new-posts-banner" hidden><button id="showNewPosts" type="button"></button></div>
-      <section id="viewContent" aria-live="polite" aria-busy="true"><div class="empty-state"><p>信号を受信しています…</p></div></section>
+      <section id="viewContent" aria-live="polite" aria-busy="true">
+        <div class="empty"><p>受信しています…</p></div>
+      </section>
       <div id="sentinel" class="sentinel" aria-hidden="true"><span></span><span></span><span></span></div>
     </main>
 
     <aside class="right-rail">
       <div class="right-sticky">
-        <label class="search-box"><span>⌕</span><input id="sidebarSearch" type="search" placeholder="微弱信号を検索" autocomplete="off"></label>
-        <section class="side-card"><h2>いま流れているもの</h2><div id="trendList"></div><button class="side-link" type="button" data-route="explore">さらに表示</button></section>
-        <section class="side-card"><h2>おすすめの受信元</h2><div id="suggestedAuthors"></div></section>
-        <footer class="side-footer"><button type="button" data-action="reset-seen">先頭へ</button><span>·</span><button type="button" data-action="drift">漂流</button><span>·</span><span>微弱信号</span></footer>
+        <label class="search-box"><span>⌕</span><input id="sideSearch" type="search" placeholder="検索"></label>
+        <section class="side-card">
+          <h2>いま流れているもの</h2>
+          <div id="topicList"><p class="side-loading">話題を受信中…</p></div>
+        </section>
+        <section class="side-card">
+          <h2>おすすめの受信元</h2>
+          <div id="suggestedAuthors"></div>
+        </section>
+        <footer class="side-footer">微弱信号 · 自動生成</footer>
       </div>
     </aside>
   </div>
 
   <nav class="mobile-nav" aria-label="モバイルナビゲーション">
-    <button type="button" data-route="home" aria-label="ホーム">⌂</button><button type="button" data-route="explore" aria-label="検索">⌕</button><button type="button" data-route="notifications" aria-label="通知">◌</button><button type="button" data-route="bookmarks" aria-label="保存済み">◇</button><button type="button" data-route="profile/you" aria-label="プロフィール">○</button>
+    <button type="button" data-route="home" aria-label="ホーム">⌂</button>
+    <button type="button" data-route="explore" aria-label="検索">⌕</button>
+    <button type="button" data-route="notifications" aria-label="通知">◌</button>
+    <button type="button" data-route="bookmarks" aria-label="保存済み">◇</button>
+    <button type="button" data-route="profile/you" aria-label="プロフィール">○</button>
   </nav>
-  <button id="mobileCompose" class="mobile-compose" type="button" aria-label="信号を送る">＋</button>
+  <button id="mobileComposer" class="mobile-compose" type="button" aria-label="ポストする">＋</button>
 
   <dialog id="composerDialog" class="composer-dialog">
-    <form method="dialog" class="dialog-shell">
-      <div class="dialog-header"><button id="closeComposer" class="text-button" value="cancel" type="button">キャンセル</button><strong id="composerDialogTitle">信号を送る</strong><button id="dialogSubmit" class="small-primary" type="button" disabled>送信</button></div>
-      <div id="replyContext" class="reply-context" hidden></div>
-      <div class="dialog-composer"><span class="avatar tone-0">◌</span><textarea id="dialogComposerText" rows="7" maxlength="180" placeholder="返信を送信" aria-label="投稿内容"></textarea></div>
-      <div class="dialog-counter"><span id="dialogCounter">0</span>/180</div>
-    </form>
+    <div class="dialog-head">
+      <button id="closeComposer" type="button">キャンセル</button>
+      <strong id="dialogTitle">ポストする</strong>
+      <button id="dialogSubmit" class="primary-small" type="button" disabled>送信</button>
+    </div>
+    <div id="replyPreview" class="reply-preview" hidden></div>
+    <div class="dialog-body">
+      <span class="avatar tone-0">◌</span>
+      <textarea id="dialogText" maxlength="180" rows="7" placeholder="いまどうしてる？"></textarea>
+    </div>
+    <div class="dialog-count"><span id="dialogCount">0</span>/180</div>
   </dialog>
 
-  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
-
-  <template id="postTemplate">
-    <article class="post" tabindex="0">
-      <button class="avatar-button" type="button" aria-label="プロフィールを表示"><span class="avatar"></span></button>
-      <div class="post-main">
-        <div class="post-meta"><button class="author-name" type="button"></button><span class="author-handle"></span><span>·</span><time class="post-time"></time><button class="post-more" type="button" aria-label="その他">•••</button></div>
-        <p class="replying-to" hidden></p><p class="post-text"></p><div class="quote-card" hidden></div>
-        <div class="post-actions" aria-label="投稿への操作">
-          <button class="post-action reply-action" type="button" aria-label="返信"><span class="action-icon">◯</span><span class="action-count"></span></button>
-          <button class="post-action repost-action" type="button" aria-label="再共有"><span class="action-icon">⇄</span><span class="action-count"></span></button>
-          <button class="post-action like-action" type="button" aria-label="いいね"><span class="action-icon">♡</span><span class="action-count"></span></button>
-          <button class="post-action view-action" type="button" aria-label="表示回数"><span class="action-icon">▥</span><span class="action-count"></span></button>
-          <button class="post-action bookmark-action" type="button" aria-label="保存"><span class="action-icon">◇</span></button>
-          <button class="post-action share-action" type="button" aria-label="共有"><span class="action-icon">↥</span></button>
-        </div>
-      </div>
-    </article>
-  </template>
-
-  <script src="./app.js?v=4.1" defer></script>
-  <script src="./conversation-ui.js?v=6" defer></script>
-  <script src="./current-topics.js?v=7" defer></script>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <script src="./app.js?v=9" defer></script>
 </body>
 </html>
