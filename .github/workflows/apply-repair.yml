@@ -1,0 +1,77 @@
+name: Apply V9 repair
+
+on:
+  push:
+    branches: [repair/v9-clean]
+    paths:
+      - ".repair/apply"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apply-v9-repair
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repair branch
+        uses: actions/checkout@v4
+        with:
+          ref: repair/v9-clean
+          fetch-depth: 0
+
+      - name: Expand validated repair bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .repair/bundle.* | base64 --decode > /tmp/small-signals-v9.tar.gz
+          tar -xzf /tmp/small-signals-v9.tar.gz
+
+      - name: Remove obsolete layers
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f conversation-ui.js conversation-ui.css current-topics.js hotfix.css sw.js
+          rm -f scripts/generate_v7.py.gz.b64 scripts/generate_v5.py.gz.b64 scripts/generate.v5.py.gz.b64
+          rm -f scripts/generate.runtime.py.gz app.runtime.js.gz
+          rm -rf .repair
+          rm -f .github/workflows/apply-repair.yml
+
+      - name: Validate repaired repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile scripts/generate.py
+          python scripts/generate.py --check
+          node --check app.js
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+
+          html = Path('index.html').read_text(encoding='utf-8')
+          refs = re.findall(r'(?:src|href)="\.\/([^"?#]+)', html)
+          missing = [ref for ref in refs if not Path(ref).exists()]
+          if missing:
+              raise SystemExit(f'missing assets: {missing}')
+
+          posts = json.loads(Path('data/posts.json').read_text(encoding='utf-8'))
+          authors = json.loads(Path('data/authors.json').read_text(encoding='utf-8'))
+          assert posts.get('version') == 9
+          assert authors.get('version') == 2
+          assert len(posts.get('posts', [])) >= 200
+          print(f"validated posts={len(posts['posts'])} assets={refs}")
+          PY
+
+      - name: Commit repaired repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "small-signals-repair[bot]"
+          git config user.email "small-signals-repair[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Rebuild small-signals V9 cleanly"
+          git push origin HEAD:repair/v9-clean
