@@ -35,8 +35,6 @@ jobs:
           python scripts/generate.py --check
       - name: Generate posts and topics
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash-lite' }}
           POST_COUNT: ${{ inputs.count || '120' }}
         run: python scripts/generate.py
       - name: Validate generated data
